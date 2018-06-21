@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CreditCardService {
+	
+	
+	private String pound = "\u00a3";
 
 	@Autowired
 	private CreditCardRepository creditCardRepository;
@@ -18,7 +21,7 @@ public class CreditCardService {
 	 */
 	public String saveCreditCard(CreditCard creditCard) {
 		CreditCard cr = creditCardRepository.save(creditCard);
-		return "credit card has been created with ID" + cr.getId();
+		return "CREDIT CARD HAS BEEN CREATED WITH NAME:" + cr.getName();
 	}
 
 	/**
@@ -34,23 +37,20 @@ public class CreditCardService {
 	 * @param chargeAmountRequest
 	 * @return
 	 */
-	public String checkAndUpdateBalance(ChargeAmountRequest chargeAmountRequest) {
+	public String checkAndUpdateOutStanding(ChargeAmountRequest chargeAmountRequest) {
 		CreditCard cr = creditCardRepository.findByName(chargeAmountRequest.getName());
 		if (null != cr) {
-			long totalBalance = (long) (cr.getBalance() + chargeAmountRequest.getAmount());
-			if (totalBalance < cr.getLimit()) {
-				cr.setBalance(totalBalance);
+			long totalOutstanding = (long) (cr.getBalance() + chargeAmountRequest.getAmount());
+			if (totalOutstanding < cr.getLimit()) {
+				cr.setBalance(totalOutstanding);
 			} else {
-				// Throw Limit reached exception
-				throw new LimitReachedExcpetion("limit reached");
+				throw new LimitReachedExcpetion("CREDIT LIMIT REACHED "+"CURRENT OUTSTANDING AMOUNT "+pound+cr.getBalance() + " CREDIT LIMIT "+pound+cr.getLimit());
 			}
-		CreditCard card = creditCardRepository.save(cr);
-			return "success with balance" + card.getBalance();
+		CreditCard updatedCard = creditCardRepository.save(cr);
+			return "SUCCESS: UPDATED OUTSTANDING " +pound+updatedCard.getBalance();
 		} else {
-			// Throw no card exception
 			throw new NoCardsFoundException("No Credit cards found for the given Name" + chargeAmountRequest.getName());
 		}
-
 	}
 	/**
 	 * 
@@ -64,13 +64,11 @@ public class CreditCardService {
 		if (null != cr) {
 			long updatedBalance = (long) (cr.getBalance() - chargeAmountRequest.getAmount());
 				cr.setBalance(updatedBalance);
-				CreditCard card = creditCardRepository.save(cr);
-			return "success with balance" + card.getBalance();
+				CreditCard updatedCard = creditCardRepository.save(cr);
+			return "BALANCE HAS BEEN UPDATED " +pound+updatedCard.getBalance();
 		} else {
-			// Throw no card exception
 			throw new NoCardsFoundException("No Credit cards found for the given Name" + chargeAmountRequest.getName());
 		}
-	
 	}
 
 }

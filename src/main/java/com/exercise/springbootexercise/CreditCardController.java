@@ -39,12 +39,12 @@ public class CreditCardController {
 	}
 	
 	@PostMapping("/charge")
-	public String increaseBalance(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
-		return creditCardService.checkAndUpdateBalance(chargeAmountRequest);
+	public String spending(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
+		return creditCardService.checkAndUpdateOutStanding(chargeAmountRequest);
 	}
 	
 	@PostMapping("/credit")
-	public String decreaseBalance(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
+	public String recharging(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
 		return creditCardService.deductAndUpdateBalance(chargeAmountRequest);
 	}	
 

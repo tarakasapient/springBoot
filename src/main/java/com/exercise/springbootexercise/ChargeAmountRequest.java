@@ -2,12 +2,23 @@ package com.exercise.springbootexercise;
 
 public class ChargeAmountRequest {
 	
+	
+	
 	private String name;
 	private double amount;
 	
+	public ChargeAmountRequest() {
+		
+	}
+	
+	public ChargeAmountRequest(String name, double amount) {
+		super();
+		this.name = name;
+		this.amount = amount;
+	}
 	
 	
-	
+
 	public String getName() {
 		return name;
 	}
