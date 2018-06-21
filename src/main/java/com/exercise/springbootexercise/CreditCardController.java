@@ -29,8 +29,7 @@ public class CreditCardController {
 			creditCard.setName(saveCreditCardRequest.getName());
 			return creditCardService.saveCreditCard(creditCard);
 		} else {
-			//Throw the exception
-			throw new InvalidCardException("credit card is invalid");
+			throw new InvalidCardException("CREDIT CARD ENTERED IS INVALID");
 		}
 	}
 	
@@ -45,9 +44,8 @@ public class CreditCardController {
 	}
 	
 	@PostMapping("/credit")
-	public String decreaseBalance() {
-		
-		return "";
+	public String decreaseBalance(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
+		return creditCardService.deductAndUpdateBalance(chargeAmountRequest);
 	}	
 
 }

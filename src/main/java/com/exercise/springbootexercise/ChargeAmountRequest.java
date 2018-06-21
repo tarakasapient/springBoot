@@ -3,7 +3,7 @@ package com.exercise.springbootexercise;
 public class ChargeAmountRequest {
 	
 	private String name;
-	private double balance;
+	private double amount;
 	
 	
 	
@@ -14,13 +14,12 @@ public class ChargeAmountRequest {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public double getBalance() {
-		return balance;
+	public double getAmount() {
+		return amount;
 	}
-	public void setBalance(double balance) {
-		this.balance = balance;
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
-	
 	
 	
 

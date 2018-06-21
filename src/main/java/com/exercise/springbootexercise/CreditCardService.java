@@ -37,20 +37,40 @@ public class CreditCardService {
 	public String checkAndUpdateBalance(ChargeAmountRequest chargeAmountRequest) {
 		CreditCard cr = creditCardRepository.findByName(chargeAmountRequest.getName());
 		if (null != cr) {
-			long totalBalance = (long) (cr.getBalance() + chargeAmountRequest.getBalance());
+			long totalBalance = (long) (cr.getBalance() + chargeAmountRequest.getAmount());
 			if (totalBalance < cr.getLimit()) {
 				cr.setBalance(totalBalance);
 			} else {
 				// Throw Limit reached exception
 				throw new LimitReachedExcpetion("limit reached");
 			}
-			creditCardRepository.save(cr);
-			return "success with balance" + totalBalance;
+		CreditCard card = creditCardRepository.save(cr);
+			return "success with balance" + card.getBalance();
 		} else {
 			// Throw no card exception
 			throw new NoCardsFoundException("No Credit cards found for the given Name" + chargeAmountRequest.getName());
 		}
 
+	}
+	/**
+	 * 
+	 * @param chargeAmountRequest
+	 * @return
+	 */
+	public String deductAndUpdateBalance(ChargeAmountRequest chargeAmountRequest) {
+		
+		CreditCard cr = creditCardRepository.findByName(chargeAmountRequest.getName());
+
+		if (null != cr) {
+			long updatedBalance = (long) (cr.getBalance() - chargeAmountRequest.getAmount());
+				cr.setBalance(updatedBalance);
+				CreditCard card = creditCardRepository.save(cr);
+			return "success with balance" + card.getBalance();
+		} else {
+			// Throw no card exception
+			throw new NoCardsFoundException("No Credit cards found for the given Name" + chargeAmountRequest.getName());
+		}
+	
 	}
 
 }
