@@ -34,10 +34,15 @@ public class CreditCardServiceTest {
 		CreditCard cCard = new CreditCard();
 		cCard.setId("01234");
 		cCard.setName("Test name");
+		cCard.setCardNumber("4386280524603440");
+
 		when(creditCardRepository.save(any(CreditCard.class))).thenReturn(cCard);
-		String card = creditCardService.saveCreditCard(new CreditCard());
+		CreditCardAPIResponse card = creditCardService.saveCreditCard(new CreditCard());
 		assertNotNull("", card);
-		assertEquals("", "CREDIT CARD HAS BEEN CREATED WITH NAME:Test name", card);
+		assertEquals("", "Test name", card.getName());
+		assertEquals("", "4386280524603440", card.getCreditCardNumber());
+		assertEquals("", "£0.0", card.getAmount());
+
 	}
 	
 
@@ -53,9 +58,33 @@ public class CreditCardServiceTest {
 	public void testUpdatingOutStandingAmount() {
 		CreditCard cCard = new CreditCard();
 		cCard.setName("Test name");
+		cCard.setLimit(100.00);
 		cCard.setBalance(10.00);
-		when(creditCardRepository.findByName(anyString())).thenReturn(null);
-		String response = creditCardService.checkAndUpdateOutStanding(new ChargeAmountRequest("test name", 10));
+		cCard.setCardNumber("4386280524603440");
+		when(creditCardRepository.findByName(anyString())).thenReturn(cCard);
+		when(creditCardRepository.save(any(CreditCard.class))).thenReturn(cCard);
+		CreditCardAPIResponse response = (CreditCardAPIResponse) creditCardService.checkAndUpdateOutStanding(new ChargeAmountRequest("Test name", 10));
+		assertNotNull("", response);
+		assertEquals("", "Test name", response.getName());
+		assertEquals("", "4386280524603440", response.getCreditCardNumber());
+		assertEquals("", "£20.0", response.getAmount());
+	}
+	
+	
+	@Test
+	public void testDeductAndUpdateBalanceWhenCardisNull() {
+		CreditCard cCard = new CreditCard();
+		cCard.setName("Test name");
+		cCard.setLimit(100.00);
+		cCard.setBalance(10.00);
+		cCard.setCardNumber("4386280524603440");
+		when(creditCardRepository.findByName(anyString())).thenReturn(cCard);
+		when(creditCardRepository.save(any(CreditCard.class))).thenReturn(cCard);
+		CreditCardAPIResponse response = (CreditCardAPIResponse) creditCardService.deductAndUpdateBalance(new ChargeAmountRequest("Test name", 10));
+		assertNotNull("", response);
+		assertEquals("", "Test name", response.getName());
+		assertEquals("", "4386280524603440", response.getCreditCardNumber());
+		assertEquals("", "£0.0", response.getAmount());
 	}
 
 }

@@ -5,11 +5,19 @@ import org.springframework.util.StringUtils;
 
 @Component
 public class CardValidator {
-	
+	/**
+	 * this method resposible for credit card number validations
+	 * - should contain only numerics
+	 * - length up to 19 characters
+	 * - Luhn validation for credit card numbers
+	 * 
+	 * @param cardNo
+	 * @return
+	 */
 	static boolean checkLuhn(String cardNo)
 	{
 		String regex = "\\d+";
-		if(!StringUtils.isEmpty(cardNo) && cardNo.matches(regex)) {
+		if(!StringUtils.isEmpty(cardNo) && cardNo.matches(regex) && cardNo.length()<=19) {
 			
 			
 			int[] ints = new int[cardNo.length()];

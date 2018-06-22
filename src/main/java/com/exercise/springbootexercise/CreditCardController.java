@@ -8,22 +8,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+/**
+ * Rest Controller responsible for CreditCard API
+ * @author tartirum
+ *
+ */
 @RequestMapping("/creditCard")
 @RestController
 public class CreditCardController {
-	
-	
+
 	@Autowired
 	private CreditCardService creditCardService;
-	
-	
+
+	/**
+	 * This method gets called for Post method which posts the request data to
+	 * service class for executing business logic and returns response object if
+	 * there are no errors. throws custom exceptions if any.
+	 * 
+	 * @param saveCreditCardRequest
+	 * @return
+	 */
 	@PostMapping("/add")
-	public String addCreditCard(@RequestBody SaveCreditCardRequest saveCreditCardRequest ) {
-		
-	if(CardValidator.checkLuhn(saveCreditCardRequest.getCardNumber())) {
+	public Object addCreditCard(@RequestBody SaveCreditCardRequest saveCreditCardRequest) {
+
+		if (CardValidator.checkLuhn(saveCreditCardRequest.getCardNumber())) {
 			CreditCard creditCard = new CreditCard();
-			creditCard.setBalance(0);
+			creditCard.setBalance(0.0);
 			creditCard.setCardNumber(saveCreditCardRequest.getCardNumber());
 			creditCard.setLimit(saveCreditCardRequest.getLimit());
 			creditCard.setName(saveCreditCardRequest.getName());
@@ -32,20 +42,20 @@ public class CreditCardController {
 			throw new InvalidCardException("CREDIT CARD ENTERED IS INVALID");
 		}
 	}
-	
+
 	@GetMapping("/getAll")
-	public List<CreditCard> getAllCreditCards() {
-	 return	creditCardService.getAllCreditCards();
+	public List<CreditCardAPIResponse> getAllCreditCards() {
+		return creditCardService.getAllCreditCards();
 	}
-	
+
 	@PostMapping("/charge")
-	public String spending(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
+	public Object spending(@RequestBody ChargeAmountRequest chargeAmountRequest) {
 		return creditCardService.checkAndUpdateOutStanding(chargeAmountRequest);
 	}
-	
+
 	@PostMapping("/credit")
-	public String recharging(@RequestBody ChargeAmountRequest chargeAmountRequest ) {
+	public Object recharging(@RequestBody ChargeAmountRequest chargeAmountRequest) {
 		return creditCardService.deductAndUpdateBalance(chargeAmountRequest);
-	}	
+	}
 
 }
